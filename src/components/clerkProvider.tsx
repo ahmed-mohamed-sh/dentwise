@@ -2,6 +2,23 @@
 
 import { ClerkProvider as Provider } from '@clerk/nextjs'
 
-export default function ClerkProvider({ children }: { children: React.ReactNode }) {
-  return <Provider>{children}</Provider>;
+interface ClerkProviderProps {
+  children: React.ReactNode;
+  appearance?: any;
+  // أي props تانيه
+}
+
+export default function ClerkProvider({ 
+  children,
+  appearance,
+  ...props 
+}: ClerkProviderProps) {
+  return (
+    <Provider 
+      appearance={appearance}
+      {...props}
+    >
+      {children}
+    </Provider>
+  );
 }
