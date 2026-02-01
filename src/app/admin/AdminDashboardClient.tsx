@@ -2,6 +2,7 @@
 
 import AdminStates from "@/components/admin/AdminStates";
 import DoctorManagement from "@/components/admin/DoctorManagement";
+import RecentAppointments from "@/components/admin/RecentAppointments";
 import Navbar from "@/components/Navbar";
 import { useGetAppointments } from "@/hooks/use-appointments";
 import { useGetDoctors } from "@/hooks/use-doctors";
@@ -10,62 +11,70 @@ import { SettingsIcon } from "lucide-react";
 
 function AdminDashboardClient() {
   const { user } = useUser();
-  const { data: doctors = [], isLoading:isLoadingDoctors } = useGetDoctors();
-  const { data: appointments = [], isLoading:isLoadingAppointments } = useGetAppointments();
+  const { data: doctors = [], isLoading: isLoadingDoctors } = useGetDoctors();
+  const { data: appointments = [], isLoading: isLoadingAppointments } =
+    useGetAppointments();
 
   //calculate states from real data
-    const stats = {
-      totalDoctors:doctors.length,
-      activeDoctors:doctors.filter((doc) => doc.isActive).length,
-      totalAppointments:appointments.length,
-      completedAppointments:appointments.filter((app) => app.status === "COMPLETED").length
-    }
-    if(isLoadingDoctors || isLoadingAppointments){
-      return <LoadingUI/>
-    }
-    
-    //get all details
-    return (
-        <div>
-            <div className="min-h-screen bg-background">
-                <Navbar />
-      <div className="max-w-7xl mx-auto px-6 py-8 pt-24">
-        {/* ADMIN WELCOME SECTION */}
-        <div className="mb-12 flex items-center justify-between bg-gradient-to-br from-primary/10 via-primary/5 to-background rounded-3xl p-8 border border-primary/20">
-          <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
-              <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-              <span className="text-sm font-medium text-primary">Admin Dashboard</span>
-            </div>
-            <div>
-              <h1 className="text-4xl font-bold mb-2">
-                Welcome back, {user?.firstName || "Admin"}!
-              </h1>
-              <p className="text-muted-foreground">
-                Manage doctors, oversee appointments, and monitor your dental practice performance.
-              </p>
-            </div>
-          </div>
+  const stats = {
+    totalDoctors: doctors.length,
+    activeDoctors: doctors.filter((doc) => doc.isActive).length,
+    totalAppointments: appointments.length,
+    completedAppointments: appointments.filter(
+      (app) => app.status === "COMPLETED",
+    ).length,
+  };
+  if (isLoadingDoctors || isLoadingAppointments) {
+    return <LoadingUI />;
+  }
 
-          <div className="hidden lg:block">
-            <div className="w-32 h-32 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center">
-              <SettingsIcon className="w-16 h-16 text-primary" />
+  //get all details
+  return (
+    <div>
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="max-w-7xl mx-auto px-6 py-8 pt-24">
+          {/* ADMIN WELCOME SECTION */}
+          <div className="mb-12 flex items-center justify-between bg-gradient-to-br from-primary/10 via-primary/5 to-background rounded-3xl p-8 border border-primary/20">
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 rounded-full border border-primary/20">
+                <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                <span className="text-sm font-medium text-primary">
+                  Admin Dashboard
+                </span>
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold mb-2">
+                  Welcome back, {user?.firstName || "Admin"}!
+                </h1>
+                <p className="text-muted-foreground">
+                  Manage doctors, oversee appointments, and monitor your dental
+                  practice performance.
+                </p>
+              </div>
+            </div>
+
+            <div className="hidden lg:block">
+              <div className="w-32 h-32 bg-gradient-to-br from-primary/20 to-primary/10 rounded-full flex items-center justify-center">
+                <SettingsIcon className="w-16 h-16 text-primary" />
+              </div>
             </div>
           </div>
+          <AdminStates
+            totalDoctors={stats.totalDoctors}
+            activeDoctors={stats.activeDoctors}
+            totalAppointments={stats.totalAppointments}
+            completedAppointments={stats.completedAppointments}
+          />
+          <DoctorManagement />
+          <RecentAppointments />
         </div>
-        <AdminStates
-      totalDoctors={stats.totalDoctors}
-      activeDoctors={stats.activeDoctors}
-      totalAppointments={stats.totalAppointments}
-      completedAppointments={stats.completedAppointments} />
-      <DoctorManagement/>
       </div>
     </div>
-        </div>
-    )
+  );
 }
 
-export default AdminDashboardClient
+export default AdminDashboardClient;
 
 function LoadingUI() {
   return (
@@ -80,7 +89,7 @@ function LoadingUI() {
           {/* Tooth shapes */}
           <g>
             <path
-              style={{ fill: '#FF9900' }}
+              style={{ fill: "#FF9900" }}
               d="M496.785,174.801c-16.158,76.139-33.132,108.7-43.496,163.866
                  C429.949,462.546,407.344,512,358.135,512c-57.125,0-56.145-187.369-106.823-187.369
                  C200.634,324.631,201.614,512,144.489,512c-9.14,0-17.3-1.713-24.808-5.304
@@ -110,22 +119,37 @@ function LoadingUI() {
         <h3 className="text-3xl font-bold bg-gradient-to-r from-orange-400 to-orange-300 bg-clip-text text-transparent">
           DentWise
         </h3>
-        <p className="text-lg text-muted-foreground font-medium">Preparing your dashboard</p>
+        <p className="text-lg text-muted-foreground font-medium">
+          Preparing your dashboard
+        </p>
 
         {/* Animated dots */}
         <div className="flex justify-center space-x-2">
           <div className="w-3 h-3 bg-orange-400 rounded-full animate-bounce"></div>
-          <div className="w-3 h-3 bg-orange-300 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-          <div className="w-3 h-3 bg-orange-200 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+          <div
+            className="w-3 h-3 bg-orange-300 rounded-full animate-bounce"
+            style={{ animationDelay: "0.2s" }}
+          ></div>
+          <div
+            className="w-3 h-3 bg-orange-200 rounded-full animate-bounce"
+            style={{ animationDelay: "0.4s" }}
+          ></div>
         </div>
       </div>
 
       <style jsx>{`
         @keyframes bounce-slow {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-8px); }
+          0%,
+          100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(-8px);
+          }
         }
-        .animate-bounce-slow { animation: bounce-slow 1.5s infinite; }
+        .animate-bounce-slow {
+          animation: bounce-slow 1.5s infinite;
+        }
       `}</style>
     </div>
   );
